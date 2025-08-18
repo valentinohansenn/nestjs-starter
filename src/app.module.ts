@@ -7,11 +7,12 @@ import {
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { CatsModule } from './cats/cats.module';
-import { LoggerMiddleware } from './cats/middleware/logger.middleware';
+import { LoggerMiddleware } from './middleware/logger.middleware';
 import { CatsController } from './cats/cats.controller';
-import { APP_GUARD, APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ValidationPipe } from './pipes/validation.pipe';
 import { RolesGuard } from './guard/roles.guard';
+import { LoggingInterceptor } from './interceptor/logging.interceptor';
 
 @Module({
   imports: [CatsModule],
@@ -25,6 +26,10 @@ import { RolesGuard } from './guard/roles.guard';
     {
       provide: APP_GUARD,
       useClass: RolesGuard,
+    },
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
     },
   ],
 })
