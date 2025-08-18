@@ -7,14 +7,11 @@ import {
   Param,
   Header,
   Redirect,
+  Query,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
-
-type CreateCatDto = {
-  name: string;
-  age: number;
-  breed?: string;
-};
+import { CreateCatDto } from './dto/create-cat.dto';
+import { Cat } from 'src/cats/interfaces/cat.interface';
 
 @Controller('cats')
 export class CatsController {
@@ -28,8 +25,12 @@ export class CatsController {
   }
 
   @Get()
-  findAll() {
-    return this.catsService.findAll();
+  // Parameterized query parameters (e.g., GET /cats?age=2&breed=Persian)
+  async findAll(
+    @Query('age') age: number,
+    @Query('breed') breed: string,
+  ): Promise<Cat[]> {
+    return this.catsService.findAll(age, breed);
   }
 
   @Get(':id') // Get specific id

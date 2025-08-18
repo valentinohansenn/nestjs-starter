@@ -11,8 +11,12 @@ type Cat = {
 export class CatsService {
   private cats: Cat[] = [];
 
-  findAll() {
-    return this.cats;
+  findAll(age?: number, breed?: string) {
+    return this.cats.filter((c) => {
+      if (age && c.age !== age) return false;
+      if (breed && c.breed !== breed) return false;
+      return true;
+    });
   }
 
   findOne(id: string) {
