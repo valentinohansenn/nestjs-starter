@@ -9,8 +9,9 @@ import { AppService } from './app.service';
 import { CatsModule } from './cats/cats.module';
 import { LoggerMiddleware } from './cats/middleware/logger.middleware';
 import { CatsController } from './cats/cats.controller';
-import { APP_PIPE } from '@nestjs/core';
+import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { ValidationPipe } from './pipes/validation.pipe';
+import { RolesGuard } from './guard/roles.guard';
 
 @Module({
   imports: [CatsModule],
@@ -20,6 +21,10 @@ import { ValidationPipe } from './pipes/validation.pipe';
     {
       provide: APP_PIPE,
       useClass: ValidationPipe,
+    },
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
     },
   ],
 })

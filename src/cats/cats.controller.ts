@@ -9,6 +9,7 @@ import {
   Redirect,
   Query,
   UsePipes,
+  UseGuards,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
 import type { CreateCatDto } from './dto/create-cat.dto';
@@ -17,12 +18,17 @@ import type { Cat } from './interfaces/cat.interface';
 import { ZodValidationPipe } from '../pipes/zod-validation.pipe';
 import { ValidationPipe } from 'src/pipes/validation.pipe';
 import { ParseIntPipe } from 'src/pipes/parse-int.pipe';
+import { RolesGuard } from 'src/guard/roles.guard';
+import { Roles } from 'src/decorator/roles.decorator';
+import { Reflector } from '@nestjs/core';
 
 @Controller('cats')
+@UseGuards(new RolesGuard(new Reflector()))
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
 
   @Post()
+  @Roles(['admin'])
   @HttpCode(204) // Specify a custom HTTP status code for the response
   @Header('Cache-Control', 'no-store')
   @UsePipes(new ZodValidationPipe(createCatSchema))
