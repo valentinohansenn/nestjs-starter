@@ -1,11 +1,5 @@
 import { Injectable } from '@nestjs/common';
-
-type Cat = {
-  id: string;
-  name: string;
-  age: number;
-  breed?: string;
-};
+import type { Cat } from './interfaces/cat.interface';
 
 @Injectable()
 export class CatsService {

@@ -8,10 +8,15 @@ import {
   Header,
   Redirect,
   Query,
+  UsePipes,
 } from '@nestjs/common';
 import { CatsService } from './cats.service';
-import { CreateCatDto } from './dto/create-cat.dto';
-import { Cat } from 'src/cats/interfaces/cat.interface';
+import type { CreateCatDto } from './dto/create-cat.dto';
+import { createCatSchema } from './dto/create-cat.dto';
+import type { Cat } from './interfaces/cat.interface';
+import { ZodValidationPipe } from '../pipes/zod-validation.pipe';
+import { ValidationPipe } from 'src/pipes/validation.pipe';
+import { ParseIntPipe } from 'src/pipes/parse-int.pipe';
 
 @Controller('cats')
 export class CatsController {
@@ -20,7 +25,8 @@ export class CatsController {
   @Post()
   @HttpCode(204) // Specify a custom HTTP status code for the response
   @Header('Cache-Control', 'no-store')
-  create(@Body() createCatDto: CreateCatDto) {
+  @UsePipes(new ZodValidationPipe(createCatSchema))
+  create(@Body(new ValidationPipe()) createCatDto: CreateCatDto) {
     return this.catsService.create(createCatDto);
   }
 
@@ -37,7 +43,8 @@ export class CatsController {
   // Redirect to another page, both arguments are optional
   // default value of statusCode is 302 (found) if ommitted
   @Redirect('https://nestjs.com', 301)
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', new ParseIntPipe()) id: string) {
+    // ParseIntPipe ensures the parameter is an integer, otherwise the body will not be executed
     return this.catsService.findOne(id);
   }
 }
