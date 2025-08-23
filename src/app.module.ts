@@ -13,9 +13,17 @@ import { APP_GUARD, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
 import { ValidationPipe } from './pipes/validation.pipe';
 import { RolesGuard } from './guard/roles.guard';
 import { LoggingInterceptor } from './interceptor/logging.interceptor';
+import { ConfigModule } from './config/config.module';
 
 @Module({
-  imports: [CatsModule],
+  imports: [
+    ConfigModule.registerAsync({
+      useFactory: () => ({
+        folder: 'config', // specify your env files folder
+      }),
+    }),
+    CatsModule,
+  ],
   controllers: [AppController],
   providers: [
     AppService,
